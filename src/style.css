@@ -33,9 +33,14 @@ textarea {
   box-sizing: border-box;
   font-family: Poppins, sans-serif;
 }
-
+.grid {
+  display: grid;
+}
 .flex {
   display: flex;
+}
+.flex-1 {
+  flex: 1;
 }
 .column {
   flex-direction: column;
@@ -51,6 +56,9 @@ textarea {
 }
 .align-center {
   align-items: center;
+}
+.align-self-end {
+  align-self: flex-end;
 }
 .full {
   width: 100%;
