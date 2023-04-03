@@ -14,8 +14,8 @@ export const useWeatherStore = defineStore({
     unit: "metric",
   }),
   actions: {
-    initWeather() {
-      this.weather = initWeatherForAddress(this.address, this.unit);
+    async initWeather() {
+      this.weather = await initWeatherForAddress(this.address, this.unit);
     },
     addAddress(address) {
       this.address = address;

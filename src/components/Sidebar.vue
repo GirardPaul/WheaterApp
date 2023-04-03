@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
+import { useWeatherStore } from "../store/store";
 const URL_SEARCH_CITY =
   "https://nominatim.openstreetmap.org/search?format=json";
 const URL_REVERSE_GEOCODING =
@@ -7,9 +8,14 @@ const URL_REVERSE_GEOCODING =
 const dateNow = ref(null);
 const searchLocation = ref(false);
 const cityField = ref(""),
-  citySelected = ref("Paris"),
   currentPage = ref(1),
   citySearchResults = ref([]);
+const store = useWeatherStore();
+const citySelected = computed(() => store.address && store.address.city);
+
+defineProps({
+  currentWeather: Object,
+});
 
 const paginationResults = computed(() => {
   const startIndex = (currentPage.value - 1) * 3;
@@ -69,7 +75,11 @@ function findMyLocation() {
           retreiveCity.address &&
           retreiveCity.address.village
         ) {
-          citySelected.value = retreiveCity.address.village;
+          store.addAddress({
+            city: retreiveCity.address.village,
+            lat: coords.latitude,
+            lng: coords.longitude,
+          });
         }
       },
       (error) => {
@@ -82,8 +92,11 @@ function findMyLocation() {
 }
 
 function selectAddress(city) {
-  citySelected.value =
-    city && city.display_name ? city.display_name.split(",")[0] : "";
+  store.addAddress({
+    city: city && city.display_name ? city.display_name.split(",")[0] : "",
+    lat: city.lat,
+    lng: city.lon,
+  });
   searchLocation.value = false;
 }
 
@@ -166,9 +179,13 @@ onMounted(() => {
       </div>
     </div>
     <div v-if="!searchLocation" class="flex column align-center">
-      <img src="../assets/Shower.png" alt="Shower Logo" class="logo-weather" />
-      <h3>15<span class="metric">°C</span></h3>
-      <p class="wheater">Shower</p>
+      <img
+        :src="currentWeather.imgUrl"
+        alt="Shower Logo"
+        class="logo-weather"
+      />
+      <h3>{{ currentWeather.temperature }}<span class="metric">°C</span></h3>
+      <p class="wheater">{{ currentWeather.weather }}</p>
       <div class="day-informations flex justify-between align-center">
         <p>Aujourd'hui</p>
         <p class="m-16">•</p>
