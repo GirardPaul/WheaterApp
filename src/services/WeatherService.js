@@ -143,7 +143,6 @@ const formatCurrentWeather = (currentWeather, unit) => {
 
   return current;
 };
-
 const firstLetterCapitalized = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
