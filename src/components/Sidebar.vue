@@ -15,6 +15,7 @@ const citySelected = computed(() => store.address && store.address.city);
 
 defineProps({
   currentWeather: Object,
+  unit: String,
 });
 
 const paginationResults = computed(() => {
@@ -63,6 +64,7 @@ async function reverseLatLng(lat, lng) {
   return null;
 }
 function findMyLocation() {
+  store.isLoading = true;
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
@@ -83,10 +85,12 @@ function findMyLocation() {
         }
       },
       (error) => {
+        store.isLoading = false;
         searchLocation.value = true;
       }
     );
   } else {
+    store.isLoading = false;
     searchLocation.value = true;
   }
 }
@@ -140,7 +144,7 @@ onMounted(() => {
         @click="searchLocation = !searchLocation"
         class="btn-search-places pointer"
       >
-        Search for places
+        Rechercher une ville
       </button>
       <button @click="findMyLocation()" class="btn-search-localisation pointer">
         <span class="material-icons white">my_location</span>
@@ -158,7 +162,7 @@ onMounted(() => {
           <input
             class="search-input"
             type="text"
-            placeholder="Search Location"
+            placeholder="Exemple : Paris"
             v-model="cityField"
             @keyup.enter="searchCity()"
           />
@@ -184,7 +188,10 @@ onMounted(() => {
         alt="Shower Logo"
         class="logo-weather"
       />
-      <h3>{{ currentWeather.temperature }}<span class="metric">°C</span></h3>
+      <h3>
+        {{ currentWeather.temperature
+        }}<span class="metric">{{ unit === "imperial" ? "°F" : "°C" }}</span>
+      </h3>
       <p class="wheater">{{ currentWeather.weather }}</p>
       <div class="day-informations flex justify-between align-center">
         <p>Aujourd'hui</p>
@@ -372,6 +379,14 @@ img {
   border: none;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.btn-search-localisation:hover,
+.btn-search-places:hover {
+  background: #e7e7eb;
+  color: #110e3c;
+}
+.btn-search-localisation:hover .material-icons {
+  color: #110e3c;
 }
 .btn-search-places {
   background: #6e707a;

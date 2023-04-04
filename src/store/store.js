@@ -12,10 +12,13 @@ export const useWeatherStore = defineStore({
         },
     weather: null,
     unit: "metric",
+    isLoading: false,
   }),
   actions: {
     async initWeather() {
+      this.isLoading = true;
       this.weather = await initWeatherForAddress(this.address, this.unit);
+      this.isLoading = false;
     },
     addAddress(address) {
       this.address = address;
