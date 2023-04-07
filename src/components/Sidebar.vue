@@ -247,6 +247,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
+p,
+h3 {
+  text-align: center;
+}
 .ml-9 {
   margin-left: 0.9rem;
 }
